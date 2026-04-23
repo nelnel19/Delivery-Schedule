@@ -42,16 +42,13 @@ const Header = () => {
           <div className="user-avatar">
             <span>{user?.name?.charAt(0).toUpperCase() || 'U'}</span>
           </div>
-          <div className="user-details">
-            <span className="user-welcome">Welcome back,</span>
-            <span className="user-name">{user?.name || 'User'}</span>
-          </div>
+          <span className="user-name">{user?.name || 'User'}</span>
           <button onClick={handleLogout} className="logout-btn">
             <svg className="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l4-4-4-4M16 7V4a2 2 0 0 0-2-2h-4" />
               <path d="M12 12h8" />
             </svg>
-            Logout
+            Sign Out
           </button>
         </div>
       </div>

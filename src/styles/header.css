@@ -108,19 +108,13 @@
   transform: translateY(-1px);
 }
 
-.nav-link.active {
-  color: white;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
 /* User Section */
 .user-section {
   display: flex;
   align-items: center;
   gap: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem 0.4rem 0.6rem;
   border-radius: 40px;
   transition: all 0.3s ease;
 }
@@ -130,8 +124,8 @@
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border-radius: 50%;
   display: flex;
@@ -147,22 +141,10 @@
   color: white;
 }
 
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-welcome {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-}
-
 .user-name {
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: white;
 }
 
@@ -171,16 +153,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.45rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
   color: #f87171;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .logout-icon {
@@ -189,8 +171,8 @@
 }
 
 .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
   transform: translateY(-1px);
   color: #ef4444;
 }
@@ -222,12 +204,8 @@
     padding: 0.6rem;
   }
   
-  .user-details {
+  .user-name {
     display: none;
-  }
-  
-  .user-section {
-    padding: 0.3rem;
   }
   
   .logout-btn span {
@@ -235,7 +213,11 @@
   }
   
   .logout-btn {
-    padding: 0.5rem;
+    padding: 0.45rem;
+  }
+  
+  .user-section {
+    padding: 0.4rem;
   }
 }
 
@@ -260,7 +242,7 @@
   }
 }
 
-/* Animation for active route (optional - add with React Router) */
+/* Animation for nav links */
 .nav-link {
   position: relative;
   overflow: hidden;
