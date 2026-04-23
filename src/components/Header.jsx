@@ -40,7 +40,7 @@ const Header = () => {
         
         <div className="user-section">
           <div className="user-avatar">
-            <span>{user?.name?.charAt(0).toUpperCase() || 'U'}</span>
+            <span>{user?.name?.charAt(0).toUpperCase()}</span>
           </div>
           <button onClick={handleLogout} className="logout-btn">
             <svg className="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
