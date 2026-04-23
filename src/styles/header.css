@@ -36,7 +36,6 @@
 .logo-image {
   height: 45px;
   width: auto;
-  filter: brightness(0) invert(1);
   transition: transform 0.3s ease;
 }
 
@@ -53,7 +52,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ffffff 0%, #a0c4e8 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fbbf24 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -103,8 +102,8 @@
 }
 
 .nav-link:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
   transform: translateY(-1px);
 }
 
@@ -135,19 +134,41 @@
 }
 
 .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #f87171;
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
   transform: translateY(-1px);
 }
 
 .logout-btn:hover .logout-icon {
-  stroke: #f87171;
+  stroke: #fbbf24;
   transform: translateX(2px);
 }
 
 .logout-btn:active {
   transform: translateY(0);
+}
+
+/* Animation for nav links */
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::before {
+  width: 80%;
 }
 
 /* Responsive Design */
@@ -180,11 +201,6 @@
   .logout-btn {
     padding: 0.55rem;
   }
-  
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -202,30 +218,4 @@
   .logo-area {
     flex: 1;
   }
-  
-  .user-section {
-    order: 2;
-  }
-}
-
-/* Animation for nav links */
-.nav-link {
-  position: relative;
-  overflow: hidden;
-}
-
-.nav-link::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-
-.nav-link:hover::before {
-  width: 80%;
 }
