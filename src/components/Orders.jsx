@@ -16,7 +16,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/orders/all');
+      const response = await axios.get('https://deltaplus-delivery-schedule-backend.onrender.com/api/orders/all');
       setOrders(response.data);
     } catch (error) {
       console.error('Error fetching orders:', error);

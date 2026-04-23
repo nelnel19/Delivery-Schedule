@@ -13,7 +13,7 @@ function Register() {
 
   const submit = async () => {
     await axios.post(
-      "http://localhost:5000/api/auth/register",
+      "https://deltaplus-delivery-schedule-backend.onrender.com/api/auth/register",
       form
     );
 

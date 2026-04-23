@@ -187,7 +187,7 @@ const OrderManagement = () => {
     formData.append('delivery_date', orderData.delivery_date);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/orders/create-with-file', formData, {
+      const response = await axios.post('https://deltaplus-delivery-schedule-backend.onrender.com/api/orders/create-with-file', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setMessage(`Order #${response.data.orderId} created successfully!`);
