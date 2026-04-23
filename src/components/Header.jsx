@@ -8,24 +8,51 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     navigate('/');
   };
 
   return (
     <header className="header">
       <div className="header-container">
-        <div className="logo">
-          <h2>Order Management System</h2>
+        <div className="logo-area">
+          <img src="/deltaplus.png" alt="DeltaPlus Logo" className="logo-image" />
+          <div className="logo-text">
+            <h1>DeltaPlus</h1>
+            <span>Delivery Schedule System</span>
+          </div>
         </div>
         
         <nav className="nav-menu">
-          <Link to="/order" className="nav-link">Create Order</Link>
-          <Link to="/orders" className="nav-link">My Orders</Link>
+          <Link to="/order" className="nav-link">
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 4v16M4 12h16" />
+            </svg>
+            Create Order
+          </Link>
+          <Link to="/orders" className="nav-link">
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 7L9 18L4 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            My Orders
+          </Link>
         </nav>
         
-        <div className="user-info">
-          {user && <span className="user-name">Welcome, {user.name}</span>}
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+        <div className="user-section">
+          <div className="user-avatar">
+            <span>{user?.name?.charAt(0).toUpperCase() || 'U'}</span>
+          </div>
+          <div className="user-details">
+            <span className="user-welcome">Welcome back,</span>
+            <span className="user-name">{user?.name || 'User'}</span>
+          </div>
+          <button onClick={handleLogout} className="logout-btn">
+            <svg className="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l4-4-4-4M16 7V4a2 2 0 0 0-2-2h-4" />
+              <path d="M12 12h8" />
+            </svg>
+            Logout
+          </button>
         </div>
       </div>
     </header>
