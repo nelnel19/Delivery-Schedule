@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Register() {
   const [form, setForm] = useState({
@@ -12,13 +12,17 @@ function Register() {
   const navigate = useNavigate();
 
   const submit = async () => {
-    await axios.post(
-      "https://deltaplus-delivery-schedule-backend.onrender.com/api/auth/register",
-      form
-    );
+    try {
+      await axios.post(
+        "https://deltaplus-delivery-schedule-backend.onrender.com/api/auth/register",
+        form
+      );
 
-    alert("Registered Successfully");
-    navigate("/");
+      alert("Registered Successfully");
+      navigate("/");
+    } catch (error) {
+      alert("Registration failed: " + (error.response?.data?.message || error.message));
+    }
   };
 
   return (
@@ -48,6 +52,10 @@ function Register() {
       />
 
       <button onClick={submit}>Register</button>
+
+      <p>
+        Already have an account? <Link to="/">Login here</Link>
+      </p>
     </div>
   );
 }

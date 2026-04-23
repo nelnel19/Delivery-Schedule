@@ -1,20 +1,27 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
 
   const submit = async () => {
-    const res = await axios.post(
-      "https://deltaplus-delivery-schedule-backend.onrender.com/api/auth/login",
-      form
-    );
+    try {
+      const res = await axios.post(
+        "https://deltaplus-delivery-schedule-backend.onrender.com/api/auth/login",
+        form
+      );
 
-    localStorage.setItem("token", res.data.token);
-    alert("Welcome " + res.data.user.name);
+      localStorage.setItem("token", res.data.token);
+      alert("Welcome " + res.data.user.name);
+      navigate("/order");
+    } catch (error) {
+      alert("Login failed: " + (error.response?.data?.message || error.message));
+    }
   };
 
   return (
@@ -37,6 +44,10 @@ function Login() {
       />
 
       <button onClick={submit}>Login</button>
+
+      <p>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
     </div>
   );
 }
