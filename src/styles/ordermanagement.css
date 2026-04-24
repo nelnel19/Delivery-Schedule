@@ -8,54 +8,112 @@
 
 .order-management-container {
   min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
   padding: 2rem;
   font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.order-management-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: radial-gradient(circle at 0% 0%, rgba(251, 191, 36, 0.05) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .order-management-card {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-.order-management-card:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+.order-management-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
 }
 
 .order-management-header {
   background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
-  padding: 2rem;
+  padding: 2.5rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.order-management-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.header-badge {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.header-badge span {
+  background: rgba(251, 191, 36, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 0.35rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .order-management-header h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   background: linear-gradient(135deg, #ffffff 0%, #fbbf24 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
 }
 
 .order-management-header p {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 400;
 }
 
 .order-form {
-  padding: 2rem;
+  padding: 2.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group {
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
@@ -78,7 +136,7 @@
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   font-family: 'Inter', sans-serif;
@@ -88,22 +146,39 @@
   color: #1a2a3a;
 }
 
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover {
+  border-color: #cbd5e1;
+}
+
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
   border-color: #fbbf24;
-  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1);
+  transform: translateY(-1px);
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
 }
 
 /* File Upload Area */
 .file-upload-area {
   position: relative;
+  border: 2px dashed #e2e8f0;
+  border-radius: 16px;
+  background: #fafbfc;
+  transition: all 0.3s ease;
+}
+
+.file-upload-area.drag-active {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.05);
+  transform: scale(0.99);
 }
 
 .file-input {
@@ -111,55 +186,95 @@
 }
 
 .file-label {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
-  color: white;
-  border-radius: 12px;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: transparent;
+  color: #64748b;
+  border-radius: 16px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
 }
 
 .file-label:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(135deg, #243b4a 0%, #1a2a3a 100%);
+  background: rgba(251, 191, 36, 0.05);
+  color: #1a2a3a;
 }
 
 .upload-icon {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   stroke: #fbbf24;
 }
 
 .file-hint {
-  margin-top: 0.5rem;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #94a3b8;
+  text-align: center;
 }
 
-/* Submit Button */
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-secondary,
 .submit-btn {
-  width: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
-  color: white;
-  border: none;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-btn:hover::before {
+  left: 100%;
 }
 
 .submit-btn svg {
@@ -170,8 +285,7 @@
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #243b4a 0%, #1a2a3a 100%);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
 .submit-btn:active:not(:disabled) {
@@ -179,12 +293,12 @@
 }
 
 .submit-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
 .spinner {
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -198,31 +312,39 @@
 
 /* Message Styles */
 .message {
-  margin: 1.5rem 2rem 2rem 2rem;
-  padding: 1rem;
+  margin: 0 2.5rem 2.5rem 2.5rem;
+  padding: 1rem 1.25rem;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 500;
-  text-align: center;
-  animation: slideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.message-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .message-success {
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  color: #155724;
-  border-left: 4px solid #28a745;
+  background: linear-gradient(135deg, #f0f9f0 0%, #e6f4e6 100%);
+  color: #166534;
+  border-left: 4px solid #22c55e;
 }
 
 .message-error {
-  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-  color: #721c24;
-  border-left: 4px solid #dc3545;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
 }
 
-@keyframes slideIn {
+@keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -241,30 +363,39 @@
   }
   
   .order-management-header h2 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
   
   .order-form {
     padding: 1.5rem;
   }
   
-  .form-group {
-    margin-bottom: 1.3rem;
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .message {
+    margin: 0 1.5rem 1.5rem 1.5rem;
   }
   
   .file-label {
-    width: 100%;
-    justify-content: center;
+    padding: 1.5rem;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
   .order-management-header h2 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
   
   .order-management-header p {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .form-label {

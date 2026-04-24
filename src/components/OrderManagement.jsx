@@ -160,6 +160,7 @@ const OrderManagement = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -168,6 +169,25 @@ const OrderManagement = () => {
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -212,11 +232,57 @@ const OrderManagement = () => {
     <div className="order-management-container">
       <div className="order-management-card">
         <div className="order-management-header">
-          <h2>Create New Order</h2>
-          <p>Fill in the details below to create a delivery order</p>
+          <div className="header-badge">
+            <span>New Order</span>
+          </div>
+          <h2>Create Delivery Order</h2>
+          <p>Submit your delivery requirements and schedule</p>
         </div>
         
         <form onSubmit={handleSubmit} className="order-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">
+                <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 7L9 18L4 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M20 12L9 23L4 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
+                </svg>
+                Delivery Date
+              </label>
+              <input 
+                type="date" 
+                name="delivery_date" 
+                value={orderData.delivery_date}
+                onChange={handleChange} 
+                required 
+                min={today} 
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                Business Partner
+              </label>
+              <select 
+                name="deliver_to" 
+                value={orderData.deliver_to} 
+                onChange={handleChange} 
+                required 
+                className="form-select"
+              >
+                <option value="">Select a business</option>
+                {uniqueBusinessNames.map((business, index) => (
+                  <option key={index} value={business}>{business}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="form-group">
             <label className="form-label">
               <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -225,7 +291,13 @@ const OrderManagement = () => {
               </svg>
               Products File
             </label>
-            <div className="file-upload-area">
+            <div 
+              className={`file-upload-area ${dragActive ? 'drag-active' : ''}`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
               <input type="file" id="products_file" onChange={handleFileChange} required
                 accept=".txt,.csv,.xlsx,.xls,.pdf,.doc,.docx" className="file-input" />
               <label htmlFor="products_file" className="file-label">
@@ -233,51 +305,10 @@ const OrderManagement = () => {
                   <path d="M12 4v12m-4-4l4 4 4-4" />
                   <path d="M4 16v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
                 </svg>
-                {selectedFile ? selectedFile.name : 'Choose File'}
+                {selectedFile ? selectedFile.name : 'Click or drag to upload file'}
               </label>
-              <p className="file-hint">Accepted: TXT, CSV, Excel, PDF, Word (Max 10MB)</p>
+              <p className="file-hint">Supported formats: TXT, CSV, Excel, PDF, Word (Max 10MB)</p>
             </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">
-              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
-              Delivery Date
-            </label>
-            <input 
-              type="date" 
-              name="delivery_date" 
-              value={orderData.delivery_date}
-              onChange={handleChange} 
-              required 
-              min={today} 
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">
-              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12h4l2 3 4-6 2 3h4" />
-                <path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" />
-              </svg>
-              Deliver To
-            </label>
-            <select 
-              name="deliver_to" 
-              value={orderData.deliver_to} 
-              onChange={handleChange} 
-              required 
-              className="form-select"
-            >
-              <option value="">Select a business</option>
-              {uniqueBusinessNames.map((business, index) => (
-                <option key={index} value={business}>{business}</option>
-              ))}
-            </select>
           </div>
 
           <div className="form-group">
@@ -293,33 +324,53 @@ const OrderManagement = () => {
               value={orderData.additional_instructions}
               onChange={handleChange} 
               rows="4" 
-              placeholder="Any special instructions for delivery..."
+              placeholder="Special delivery instructions, contact person, landmark, etc..."
               className="form-textarea"
             />
           </div>
 
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? (
-              <>
-                <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                </svg>
-                Sending Order...
-              </>
-            ) : (
-              <>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                </svg>
-                Send Order
-              </>
-            )}
-          </button>
+          <div className="form-actions">
+            <button type="button" className="btn-secondary" onClick={() => {
+              setOrderData({
+                deliver_to: '',
+                additional_instructions: '',
+                delivery_date: ''
+              });
+              setSelectedFile(null);
+              document.getElementById('products_file').value = '';
+            }}>
+              Clear Form
+            </button>
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? (
+                <>
+                  <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                  </svg>
+                  Processing Order...
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                  </svg>
+                  Create Order
+                </>
+              )}
+            </button>
+          </div>
         </form>
         
         {message && (
           <div className={`message ${message.includes('successfully') ? 'message-success' : 'message-error'}`}>
+            <svg className="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {message.includes('successfully') ? (
+                <path d="M20 6L9 17l-5-5" />
+              ) : (
+                <circle cx="12" cy="12" r="10" />
+              )}
+            </svg>
             {message}
           </div>
         )}
