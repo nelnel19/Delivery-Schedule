@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/ordermanagement.css';
 
 const businessNames = [
   "2RM WORTHY INDUSTRIAL SUPPLIES",
@@ -208,48 +209,121 @@ const OrderManagement = () => {
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div>
-      <h2>Create New Order</h2>
-      
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Products File:</label><br />
-          <input type="file" id="products_file" onChange={handleFileChange} required
-            accept=".txt,.csv,.xlsx,.xls,.pdf,.doc,.docx" /><br />
-          <small>Accepted: TXT, CSV, Excel, PDF, Word (Max 10MB)</small>
-          {selectedFile && <p>Selected: {selectedFile.name}</p>}
+    <div className="order-management-container">
+      <div className="order-management-card">
+        <div className="order-management-header">
+          <h2>Create New Order</h2>
+          <p>Fill in the details below to create a delivery order</p>
         </div>
-        <br />
         
-        <div>
-          <label>Deliver To:</label><br />
-          <select name="deliver_to" value={orderData.deliver_to} onChange={handleChange} required>
-            <option value="">Select a business</option>
-            {uniqueBusinessNames.map((business, index) => (
-              <option key={index} value={business}>{business}</option>
-            ))}
-          </select>
-        </div>
-        <br />
+        <form onSubmit={handleSubmit} className="order-form">
+          <div className="form-group">
+            <label className="form-label">
+              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 3l-7 7 4 4 7-7z" />
+                <path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
+              </svg>
+              Products File
+            </label>
+            <div className="file-upload-area">
+              <input type="file" id="products_file" onChange={handleFileChange} required
+                accept=".txt,.csv,.xlsx,.xls,.pdf,.doc,.docx" className="file-input" />
+              <label htmlFor="products_file" className="file-label">
+                <svg className="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 4v12m-4-4l4 4 4-4" />
+                  <path d="M4 16v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
+                </svg>
+                {selectedFile ? selectedFile.name : 'Choose File'}
+              </label>
+              <p className="file-hint">Accepted: TXT, CSV, Excel, PDF, Word (Max 10MB)</p>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+              Delivery Date
+            </label>
+            <input 
+              type="date" 
+              name="delivery_date" 
+              value={orderData.delivery_date}
+              onChange={handleChange} 
+              required 
+              min={today} 
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h4l2 3 4-6 2 3h4" />
+                <path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" />
+              </svg>
+              Deliver To
+            </label>
+            <select 
+              name="deliver_to" 
+              value={orderData.deliver_to} 
+              onChange={handleChange} 
+              required 
+              className="form-select"
+            >
+              <option value="">Select a business</option>
+              {uniqueBusinessNames.map((business, index) => (
+                <option key={index} value={business}>{business}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <svg className="form-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <path d="M22 6l-10 7L2 6" />
+              </svg>
+              Additional Instructions
+            </label>
+            <textarea 
+              name="additional_instructions" 
+              value={orderData.additional_instructions}
+              onChange={handleChange} 
+              rows="4" 
+              placeholder="Any special instructions for delivery..."
+              className="form-textarea"
+            />
+          </div>
+
+          <button type="submit" disabled={loading} className="submit-btn">
+            {loading ? (
+              <>
+                <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                Sending Order...
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                Send Order
+              </>
+            )}
+          </button>
+        </form>
         
-        <div>
-          <label>Delivery Date:</label><br />
-          <input type="date" name="delivery_date" value={orderData.delivery_date}
-            onChange={handleChange} required min={today} />
-        </div>
-        <br />
-        
-        <div>
-          <label>Additional Instructions:</label><br />
-          <textarea name="additional_instructions" value={orderData.additional_instructions}
-            onChange={handleChange} rows="3" cols="50" placeholder="Any special instructions..." />
-        </div>
-        <br />
-        
-        <button type="submit" disabled={loading}>{loading ? 'Sending...' : 'Send Order'}</button>
-      </form>
-      
-      {message && <p>{message}</p>}
+        {message && (
+          <div className={`message ${message.includes('successfully') ? 'message-success' : 'message-error'}`}>
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
