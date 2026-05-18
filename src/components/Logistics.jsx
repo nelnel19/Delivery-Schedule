@@ -6,7 +6,6 @@ const Logistics = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [message, setMessage] = useState('');
   const [filterDate, setFilterDate] = useState('');
   const [hasInstructionFilter, setHasInstructionFilter] = useState('all');
   const [hasFileFilter, setHasFileFilter] = useState('all');
@@ -24,7 +23,6 @@ const Logistics = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error);
-      setMessage('Failed to load orders');
       setLoading(false);
     }
   };
@@ -49,115 +47,56 @@ const Logistics = () => {
     return matchesDate && matchesInstruction && matchesFile;
   });
 
-  const getFileIcon = (fileName) => {
-    if (!fileName) return '📄';
-    const ext = fileName.split('.').pop().toLowerCase();
-    const icons = {
-      'xlsx': '📊',
-      'xls': '📊',
-      'pdf': '📑',
-      'doc': '📝',
-      'docx': '📝',
-      'txt': '📃',
-      'csv': '📈',
-      'jpg': '🖼️',
-      'jpeg': '🖼️',
-      'png': '🖼️',
-      'gif': '🖼️',
-      'mp4': '🎥',
-      'mp3': '🎵',
-      'zip': '📦',
-      'rar': '📦'
+  const getFileExtension = (fileName) => {
+    if (!fileName) return '';
+    return fileName.split('.').pop().toLowerCase();
+  };
+
+  const getFileTypeLabel = (fileName) => {
+    const ext = getFileExtension(fileName);
+    const types = {
+      'pdf': 'PDF',
+      'xlsx': 'Excel',
+      'xls': 'Excel',
+      'docx': 'Word',
+      'doc': 'Word',
+      'jpg': 'Image',
+      'jpeg': 'Image',
+      'png': 'Image',
+      'gif': 'Image',
+      'mp4': 'Video',
+      'mp3': 'Audio',
+      'txt': 'Text',
+      'csv': 'CSV'
     };
-    return icons[ext] || '📄';
+    return types[ext] || 'File';
   };
 
   const supportsPreview = (fileName) => {
     if (!fileName) return false;
-    const ext = fileName.split('.').pop().toLowerCase();
-    const previewable = [
-      'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg',
-      'pdf', 'mp4', 'webm', 'ogg', 'mov',
-      'mp3', 'wav', 'ogg', 'm4a',
-      'xlsx', 'xls', 'docx', 'doc', 'pptx', 'ppt', 'txt', 'csv', 'rtf'
-    ];
+    const ext = getFileExtension(fileName);
+    const previewable = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'mp4', 'xlsx', 'xls', 'docx', 'doc', 'txt', 'csv'];
     return previewable.includes(ext);
   };
 
-  const getFileEmbed = (fileUrl, fileName) => {
+  const getPreviewEmbed = (fileUrl, fileName) => {
     if (!fileUrl || !fileName) return null;
+    const ext = getFileExtension(fileName);
     
-    const ext = fileName.split('.').pop().toLowerCase();
-    
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext)) {
-      return (
-        <img 
-          src={fileUrl} 
-          alt="File preview"
-          className="file-preview-image"
-        />
-      );
+    if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+      return <img src={fileUrl} alt="Preview" className="preview-image" />;
     }
     
     if (ext === 'pdf') {
-      return (
-        <iframe
-          src={`${fileUrl}#toolbar=1&navpanes=1`}
-          title="PDF Preview"
-          className="file-preview-iframe"
-        />
-      );
+      return <iframe src={`${fileUrl}#toolbar=1`} title="PDF Preview" className="preview-iframe" />;
     }
     
-    if (['mp4', 'webm', 'ogg', 'mov'].includes(ext)) {
-      return (
-        <video 
-          controls 
-          className="file-preview-video"
-          controlsList="nodownload"
-        >
-          <source src={fileUrl} type={`video/${ext}`} />
-          Your browser does not support the video tag.
-        </video>
-      );
+    if (ext === 'mp4') {
+      return <video controls className="preview-video"><source src={fileUrl} type="video/mp4" /></video>;
     }
     
-    if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
-      return (
-        <audio 
-          controls 
-          className="file-preview-audio"
-          controlsList="nodownload"
-        >
-          <source src={fileUrl} type={`audio/${ext}`} />
-          Your browser does not support the audio tag.
-        </audio>
-      );
-    }
-    
-    if (['xlsx', 'xls', 'docx', 'doc', 'pptx', 'ppt', 'txt', 'csv', 'rtf'].includes(ext)) {
-      return (
-        <iframe
-          src={`https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`}
-          title="Document Preview"
-          className="file-preview-iframe"
-        />
-      );
-    }
-    
-    return null;
-  };
-
-  const getPreviewUrl = (fileUrl, fileName) => {
-    if (!fileUrl || !fileName) return null;
-    const ext = fileName.split('.').pop().toLowerCase();
-    
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3', 'wav', 'm4a'].includes(ext)) {
-      return fileUrl;
-    }
-    
-    if (['xlsx', 'xls', 'docx', 'doc', 'pptx', 'ppt', 'txt', 'csv', 'rtf'].includes(ext)) {
-      return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+    if (['xlsx', 'xls', 'docx', 'doc', 'txt', 'csv'].includes(ext)) {
+      return <iframe src={`https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`} title="Document Preview" className="preview-iframe" />;
     }
     
     return null;
@@ -167,11 +106,31 @@ const Logistics = () => {
     setSelectedOrder(null);
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (loading) {
     return (
       <div className="logistics-container">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
           <p>Loading orders...</p>
         </div>
       </div>
@@ -180,313 +139,200 @@ const Logistics = () => {
 
   return (
     <div className="logistics-container">
-      <div className="logistics-card">
+      <div className="logistics-wrapper">
         <div className="logistics-header">
-          <div className="header-badge">
-            <span>Logistics Dashboard</span>
+          <div>
+            <div className="header-badge">Logistics Dashboard</div>
+            <h1>Order Review</h1>
+            <p>Review and manage delivery orders with file attachments</p>
           </div>
-          <h2>Order Review</h2>
-          <p>Review and manage all delivery orders with file attachments</p>
         </div>
 
         {selectedOrder ? (
-          <div className="order-details-view">
-            <button onClick={closeModal} className="back-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="detail-view">
+            <button onClick={closeModal} className="back-button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5M12 19l-7-7 7-7" />
               </svg>
               Back to Orders
             </button>
 
-            <div className="order-details-card">
-              <div className="order-details-header">
-                <h3>Order #{selectedOrder._id?.toString().slice(-6)}</h3>
-                {selectedOrder.additional_instructions && selectedOrder.additional_instructions.trim() !== '' && (
-                  <span className="instruction-badge">
-                    ⚠️ Has Instruction
-                  </span>
+            <div className="detail-card">
+              <div className="detail-card-header">
+                <div>
+                  <h2>Order #{selectedOrder._id?.toString().slice(-6)}</h2>
+                  <p className="order-meta">Created {formatDateTime(selectedOrder.created_at)}</p>
+                </div>
+                {selectedOrder.additional_instructions && selectedOrder.additional_instructions.trim() && (
+                  <div className="instruction-tag">Special Instruction</div>
                 )}
               </div>
 
-              <div className="order-details-content">
-                {selectedOrder.additional_instructions && selectedOrder.additional_instructions.trim() !== '' && (
-                  <div className="instruction-alert">
-                    <div className="instruction-alert-header">
-                      ⚠️ SPECIAL INSTRUCTION
-                    </div>
-                    <p className="instruction-text">{selectedOrder.additional_instructions}</p>
+              <div className="detail-card-body">
+                {selectedOrder.additional_instructions && selectedOrder.additional_instructions.trim() && (
+                  <div className="instruction-section">
+                    <div className="instruction-label">Special Instructions</div>
+                    <p className="instruction-content">{selectedOrder.additional_instructions}</p>
                   </div>
                 )}
 
-                <div className="details-section">
-                  <h4>Order Information</h4>
-                  <div className="details-grid">
-                    <div className="detail-item">
-                      <label>Deliver To</label>
-                      <p>{selectedOrder.deliver_to}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Delivery Date</label>
-                      <p>{new Date(selectedOrder.delivery_date).toLocaleDateString()}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Created At</label>
-                      <p>{new Date(selectedOrder.created_at).toLocaleString()}</p>
-                    </div>
+                <div className="info-grid">
+                  <div className="info-item">
+                    <label>Deliver To</label>
+                    <p>{selectedOrder.deliver_to || '-'}</p>
+                  </div>
+                  <div className="info-item">
+                    <label>Delivery Date</label>
+                    <p>{formatDate(selectedOrder.delivery_date)}</p>
                   </div>
                 </div>
 
                 {selectedOrder.products_file_url && (
-                  <div className="details-section">
-                    <h4>Attached File</h4>
-                    <div className="file-info">
-                      <div className="file-name">
-                        <span className="file-icon">{getFileIcon(selectedOrder.products_file_name)}</span>
-                        <span>{selectedOrder.products_file_name || 'Unknown'}</span>
-                      </div>
-                      <p className="file-type">File Type: {selectedOrder.products_file_type || 'Unknown'}</p>
-                      
-                      {supportsPreview(selectedOrder.products_file_name) && (
-                        <div className="file-preview">
-                          <strong>Preview:</strong>
-                          <div className="preview-container">
-                            {getFileEmbed(selectedOrder.products_file_url, selectedOrder.products_file_name)}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {!supportsPreview(selectedOrder.products_file_name) && (
-                        <div className="preview-not-available">
-                          <p>📄</p>
-                          <p><strong>Preview not available for this file type</strong></p>
-                          <p>Please download the file to view it.</p>
-                        </div>
-                      )}
-                      
-                      <div className="file-actions">
-                        {supportsPreview(selectedOrder.products_file_name) && (
-                          <a
-                            href={getPreviewUrl(selectedOrder.products_file_url, selectedOrder.products_file_name)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="preview-link"
-                          >
-                            🔗 Open in New Tab
-                          </a>
-                        )}
-                        <a
-                          href={selectedOrder.products_file_url}
-                          download={selectedOrder.products_file_name}
-                          className="download-link"
-                        >
-                          ⬇️ Download File
-                        </a>
-                      </div>
+                  <div className="file-section">
+                    <div className="file-section-header">
+                      <span className="file-label">Attached File</span>
+                      <span className="file-type-badge">{getFileTypeLabel(selectedOrder.products_file_name)}</span>
                     </div>
-                  </div>
-                )}
-
-                {!selectedOrder.products_file_url && (
-                  <div className="details-section">
-                    <div className="no-file-alert">
-                      <strong>No file attached</strong>
-                      <p>This order has no file attachment.</p>
+                    <div className="file-info">
+                      <span className="file-name">{selectedOrder.products_file_name || 'Unknown'}</span>
+                    </div>
+                    
+                    {supportsPreview(selectedOrder.products_file_name) && (
+                      <div className="preview-section">
+                        <div className="preview-container">
+                          {getPreviewEmbed(selectedOrder.products_file_url, selectedOrder.products_file_name)}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="file-actions">
+                      {supportsPreview(selectedOrder.products_file_name) && (
+                        <a href={selectedOrder.products_file_url} target="_blank" rel="noopener noreferrer" className="btn-outline">
+                          Open in New Tab
+                        </a>
+                      )}
+                      <a href={selectedOrder.products_file_url} download={selectedOrder.products_file_name} className="btn-primary">
+                        Download File
+                      </a>
                     </div>
                   </div>
                 )}
 
                 {selectedOrder.delivered_at && (
-                  <div className="details-section">
-                    <h4>Delivery Information</h4>
-                    <div className="details-grid">
-                      <div className="detail-item">
-                        <label>Delivered At</label>
-                        <p>{new Date(selectedOrder.delivered_at).toLocaleString()}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Driver</label>
-                        <p>{selectedOrder.driver_name}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Delivery Location</label>
-                        <p>{selectedOrder.delivery_location_name}</p>
-                      </div>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <label>Delivered At</label>
+                      <p>{formatDateTime(selectedOrder.delivered_at)}</p>
+                    </div>
+                    <div className="info-item">
+                      <label>Driver</label>
+                      <p>{selectedOrder.driver_name || '-'}</p>
+                    </div>
+                    <div className="info-item">
+                      <label>Delivery Location</label>
+                      <p>{selectedOrder.delivery_location_name || '-'}</p>
                     </div>
                   </div>
                 )}
               </div>
-              
-              <div className="modal-actions">
-                <button onClick={closeModal} className="close-modal-btn">
-                  Close
-                </button>
+
+              <div className="detail-card-footer">
+                <button onClick={closeModal} className="btn-secondary">Close</button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="orders-list-view">
-            <div className="filters-section">
-              <div className="filters-header">
-                <h3>All Orders</h3>
-                <p>{filteredOrders.length} order{filteredOrders.length !== 1 ? 's' : ''} found</p>
-              </div>
-              
+          <div className="list-view">
+            <div className="filters-bar">
               <div className="filters-grid">
-                <div className="filter-group">
-                  <label>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v6l4 2" />
-                    </svg>
-                    Delivery Date
-                  </label>
-                  <input 
-                    type="date" 
-                    value={filterDate} 
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    className="filter-input"
-                  />
+                <div className="filter-field">
+                  <label>Delivery Date</label>
+                  <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} className="filter-input" />
                 </div>
-
-                <div className="filter-group">
-                  <label>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 8v4l3 3M12 2a10 10 0 1 0 10 10" />
-                    </svg>
-                    Special Instruction
-                  </label>
-                  <select 
-                    value={hasInstructionFilter} 
-                    onChange={(e) => setHasInstructionFilter(e.target.value)}
-                    className="filter-select"
-                  >
+                <div className="filter-field">
+                  <label>Special Instruction</label>
+                  <select value={hasInstructionFilter} onChange={(e) => setHasInstructionFilter(e.target.value)} className="filter-select">
                     <option value="all">All Orders</option>
                     <option value="has">Has Instruction</option>
                     <option value="no">No Instruction</option>
                   </select>
                 </div>
-
-                <div className="filter-group">
-                  <label>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-                      <polyline points="13 2 13 9 20 9" />
-                    </svg>
-                    File Attachment
-                  </label>
-                  <select 
-                    value={hasFileFilter} 
-                    onChange={(e) => setHasFileFilter(e.target.value)}
-                    className="filter-select"
-                  >
+                <div className="filter-field">
+                  <label>File Attachment</label>
+                  <select value={hasFileFilter} onChange={(e) => setHasFileFilter(e.target.value)} className="filter-select">
                     <option value="all">All Orders</option>
                     <option value="has">Has File</option>
                     <option value="no">No File</option>
                   </select>
                 </div>
-
-                <button onClick={() => {
-                  setFilterDate('');
-                  setHasInstructionFilter('all');
-                  setHasFileFilter('all');
-                }} className="clear-filters-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 4v4h4M20 20v-4h-4" />
-                    <path d="M4 20l16-16" />
-                  </svg>
-                  Clear Filters
-                </button>
+                <div className="filter-actions">
+                  <button onClick={() => { setFilterDate(''); setHasInstructionFilter('all'); setHasFileFilter('all'); }} className="btn-clear">
+                    Clear Filters
+                  </button>
+                </div>
               </div>
             </div>
 
-            {message && (
-              <div className="message-alert">
-                {message}
-              </div>
-            )}
+            <div className="orders-header-bar">
+              <div className="results-count">{filteredOrders.length} order{filteredOrders.length !== 1 ? 's' : ''}</div>
+            </div>
 
             {filteredOrders.length === 0 ? (
               <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 6v6l4 2" />
                 </svg>
-                <h4>No orders found</h4>
+                <h3>No orders found</h3>
                 <p>Try adjusting your filters</p>
               </div>
             ) : (
-              <div className="orders-grid">
-                {filteredOrders.map((order) => {
-                  const hasSpecialInstruction = order.additional_instructions && order.additional_instructions.trim() !== '';
-                  const hasFile = !!order.products_file_url;
-                  
-                  return (
-                    <div 
-                      key={order._id} 
-                      className={`order-card ${hasSpecialInstruction ? 'has-instruction' : ''}`}
-                      onClick={() => setSelectedOrder(order)}
-                    >
-                      <div className="order-card-header">
-                        <div className="order-id">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M20 7L9 18L4 13" />
-                          </svg>
-                          <span>Order #{order._id?.toString().slice(-6)}</span>
-                        </div>
-                        {hasSpecialInstruction && (
-                          <span className="instruction-tag">⚠️ Instruction</span>
-                        )}
-                      </div>
-
-                      <div className="order-card-body">
-                        <div className="order-info">
-                          <div className="info-row">
-                            <label>Deliver To:</label>
-                            <p>{order.deliver_to}</p>
-                          </div>
-                          <div className="info-row">
-                            <label>Delivery Date:</label>
-                            <p>{new Date(order.delivery_date).toLocaleDateString()}</p>
-                          </div>
-                          <div className="info-row">
-                            <label>Created:</label>
-                            <p>{new Date(order.created_at).toLocaleString()}</p>
-                          </div>
-                        </div>
-
-                        <div className="order-summary">
-                          {hasFile && (
-                            <div className="summary-row">
-                              <span className="summary-icon">📎</span>
-                              <span className="summary-text">
-                                {order.products_file_name?.substring(0, 40)}
-                                {order.products_file_name?.length > 40 ? '...' : ''}
-                              </span>
-                            </div>
-                          )}
-                          {hasSpecialInstruction && (
-                            <div className="summary-row instruction-summary">
-                              <span className="summary-icon">⚠️</span>
-                              <span className="summary-text instruction-preview">
-                                {order.additional_instructions.substring(0, 60)}
-                                {order.additional_instructions.length > 60 ? '...' : ''}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="order-card-footer">
-                        <button className="view-details-btn">
-                          Review Order
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 18l6-6-6-6" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="orders-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Deliver To</th>
+                      <th>Delivery Date</th>
+                      <th>File</th>
+                      <th>Special Instruction</th>
+                      <th>Created</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.map((order) => {
+                      const hasInstruction = order.additional_instructions && order.additional_instructions.trim() !== '';
+                      const hasFile = !!order.products_file_url;
+                      
+                      return (
+                        <tr key={order._id} className={hasInstruction ? 'has-instruction' : ''} onClick={() => setSelectedOrder(order)}>
+                          <td className="order-id-cell">#{order._id?.toString().slice(-6)}</td>
+                          <td>{order.deliver_to}</td>
+                          <td>{formatDate(order.delivery_date)}</td>
+                          <td className="file-cell">
+                            {hasFile ? (
+                              <span className="file-badge">{getFileTypeLabel(order.products_file_name)}</span>
+                            ) : (
+                              <span className="no-file">—</span>
+                            )}
+                          </td>
+                          <td className="instruction-cell">
+                            {hasInstruction ? (
+                              <span className="instruction-badge">Yes</span>
+                            ) : (
+                              <span className="no-instruction">—</span>
+                            )}
+                          </td>
+                          <td>{formatDate(order.created_at)}</td>
+                          <td className="action-cell">
+                            <button className="view-button">Review</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
