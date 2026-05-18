@@ -49,8 +49,6 @@ function Login() {
           <div className="logo-container">
             <img src="/deltaplus.png" alt="DeltaPlus" className="login-logo" />
           </div>
-          <div className="header-badge">
-          </div>
           <h2>Sign In to Your Account</h2>
           <p>Access your dashboard and manage your workflow</p>
         </div>

@@ -58,7 +58,6 @@ function Register() {
             <span>Get Started</span>
           </div>
           <h2>Create an Account</h2>
-          <p>Join us to manage your workflow efficiently</p>
         </div>
 
         <div className="register-form">
