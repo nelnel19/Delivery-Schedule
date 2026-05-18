@@ -141,10 +141,13 @@ const Logistics = () => {
     <div className="logistics-container">
       <div className="logistics-wrapper">
         <div className="logistics-header">
-          <div>
-            <div className="header-badge">Logistics Dashboard</div>
-            <h1>Order Review</h1>
-            <p>Review and manage delivery orders with file attachments</p>
+          <div className="header-left">
+            <img src="/deltaplus.png" alt="DeltaPlus" className="header-logo" />
+            <div className="header-title">
+              <div className="header-badge">Logistics Dashboard</div>
+              <h1>Order Review</h1>
+              <p>Review and manage delivery orders with file attachments</p>
+            </div>
           </div>
         </div>
 

@@ -18,9 +18,27 @@
   padding: 32px 24px;
 }
 
-/* Header */
+/* Header with Logo */
 .logistics-header {
   margin-bottom: 32px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-title {
+  flex: 1;
 }
 
 .header-badge {
@@ -605,6 +623,16 @@
 @media (max-width: 768px) {
   .logistics-wrapper {
     padding: 20px 16px;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .header-logo {
+    height: 40px;
   }
   
   .logistics-header h1 {
