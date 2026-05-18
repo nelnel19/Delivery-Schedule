@@ -56,11 +56,12 @@
 }
 
 .login-header {
-  background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
+  background: #ffffff;
   padding: 2.5rem 2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .login-header::before {
@@ -70,7 +71,7 @@
   right: -10%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.05) 0%, transparent 70%);
   border-radius: 50%;
 }
 
@@ -82,7 +83,7 @@
 .login-logo {
   height: 70px;
   width: auto;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
   transition: transform 0.3s ease;
 }
 
@@ -96,7 +97,7 @@
 }
 
 .header-badge span {
-  background: rgba(251, 191, 36, 0.15);
+  background: rgba(251, 191, 36, 0.1);
   backdrop-filter: blur(10px);
   padding: 0.35rem 1rem;
   border-radius: 50px;
@@ -111,16 +112,13 @@
 .login-header h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ffffff 0%, #fbbf24 80%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1a2a3a;
   margin-bottom: 0.75rem;
   letter-spacing: -0.5px;
 }
 
 .login-header p {
-  color: rgba(255, 255, 255, 0.7);
+  color: #64748b;
   font-size: 0.9rem;
   font-weight: 400;
 }
